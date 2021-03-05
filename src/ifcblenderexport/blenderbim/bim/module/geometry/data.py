@@ -19,9 +19,12 @@ class Data:
         product = file.by_id(product_id)
         representations = []
         if product.is_a("IfcProduct"):
-            representations = product.Representation.Representations
+            if product.Representation:
+                representations = product.Representation.Representations
+            else:
+                representations = []
         elif product.is_a("IfcTypeProduct"):
-            representations = [rm.MappedRepresentation for rm in product.RepresentationMaps]
+            representations = [rm.MappedRepresentation for rm in product.RepresentationMaps or []]
         for representation in representations:
             c = representation.ContextOfItems
             rep_id = int(representation.id())

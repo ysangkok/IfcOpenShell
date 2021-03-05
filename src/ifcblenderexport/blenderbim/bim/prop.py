@@ -34,6 +34,22 @@ sheets_enum = []
 vector_styles_enum = []
 
 
+def updateIfcFile(self, context):
+    if context.scene.BIMProperties.ifc_file:
+        IfcStore.file = None
+        IfcStore.schema = None
+        # Purge data cache
+        from blenderbim.bim import modules
+
+        for module in modules.values():
+            if not module:
+                continue
+            try:
+                getattr(getattr(module, "data"), "Data").purge()
+            except AttributeError:
+                pass
+
+
 def getDiagramScales(self, context):
     global diagram_scales_enum
     if (
@@ -252,17 +268,42 @@ class Variable(PropertyGroup):
     prop_key: StringProperty(name="Property Key")
 
 
+def updateAttributeStringValue(self, context):
+    updateAttributeValue(self, self.string_value)
+
+
+def updateAttributeBoolValue(self, context):
+    updateAttributeValue(self, self.bool_value)
+
+
+def updateAttributeIntValue(self, context):
+    updateAttributeValue(self, self.int_value)
+
+
+def updateAttributeFloatValue(self, context):
+    updateAttributeValue(self, self.float_value)
+
+
+def updateAttributeEnumValue(self, context):
+    updateAttributeValue(self, self.enum_value)
+
+
+def updateAttributeValue(self, value):
+    if value:
+        self.is_null = False
+
+
 class Attribute(PropertyGroup):
     name: StringProperty(name="Name")
     data_type: StringProperty(name="Data Type")
-    string_value: StringProperty(name="Value")
-    bool_value: BoolProperty(name="Value")
-    int_value: IntProperty(name="Value")
-    float_value: FloatProperty(name="Value")
+    string_value: StringProperty(name="Value", update=updateAttributeStringValue)
+    bool_value: BoolProperty(name="Value", update=updateAttributeBoolValue)
+    int_value: IntProperty(name="Value", update=updateAttributeIntValue)
+    float_value: FloatProperty(name="Value", update=updateAttributeFloatValue)
     is_null: BoolProperty(name="Is Null")
     is_optional: BoolProperty(name="Is Optional")
     enum_items: StringProperty(name="Value")
-    enum_value: EnumProperty(items=getAttributeEnumValues, name="Value")
+    enum_value: EnumProperty(items=getAttributeEnumValues, name="Value", update=updateAttributeEnumValue)
 
 
 class Drawing(PropertyGroup):
@@ -391,7 +432,7 @@ class BIMTextProperties(PropertyGroup):
 class BIMProperties(PropertyGroup):
     schema_dir: StringProperty(default=os.path.join(cwd, "schema") + os.path.sep, name="Schema Directory")
     data_dir: StringProperty(default=os.path.join(cwd, "data") + os.path.sep, name="Data Directory")
-    ifc_file: StringProperty(name="IFC File")
+    ifc_file: StringProperty(name="IFC File", update=updateIfcFile)
     id_map: StringProperty(name="ID Map")
     guid_map: StringProperty(name="GUID Map")
     export_schema: EnumProperty(items=[("IFC4", "IFC4", ""), ("IFC2X3", "IFC2X3", "")], name="IFC Schema")
@@ -483,11 +524,6 @@ class BIMObjectProperties(PropertyGroup):
     global_ids: CollectionProperty(name="GlobalIds", type=GlobalId)
     relating_object: PointerProperty(name="Aggregate", type=bpy.types.Object)
     is_editing_aggregate: BoolProperty(name="Is Editing Aggregate")
-    is_editing_container: BoolProperty(name="Is Editing Container")
-    relating_type: PointerProperty(name="Type", type=bpy.types.Object)
-    is_editing_type: BoolProperty(name="Is Editing Type")
-    relating_type: PointerProperty(name="Type Product", type=bpy.types.Object)
-    relating_structure: PointerProperty(name="Spatial Container", type=bpy.types.Object)
     psets: CollectionProperty(name="Psets", type=PsetQto)
     qtos: CollectionProperty(name="Qtos", type=PsetQto)
     has_boundary_condition: BoolProperty(name="Has Boundary Condition")

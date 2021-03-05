@@ -66,8 +66,9 @@ class BIM_PT_mesh(Panel):
         layout = self.layout
         props = context.active_object.data.BIMMeshProperties
 
-        row = layout.row()
-        row.operator("bim.map_representation")
+        sprops = context.scene.BIMGeometryProperties
+        row = self.layout.row()
+        row.prop(sprops, "should_auto_update_mesh_representations")
 
         row = layout.row(align=True)
         op = row.operator("bim.switch_representation", text="Bake Voids", icon="SELECT_SUBTRACT")
@@ -79,6 +80,19 @@ class BIM_PT_mesh(Panel):
 
         row = layout.row()
         row.operator("bim.update_mesh_representation")
+
+        row = layout.row()
+        op = row.operator("bim.update_mesh_representation", text="Update Mesh As Rectangle Extrusion")
+        op.ifc_representation_class = "IfcExtrudedAreaSolid/IfcRectangleProfileDef"
+
+        row = layout.row()
+        op = row.operator("bim.update_mesh_representation", text="Update Mesh As Circle Extrusion")
+        op.ifc_representation_class = "IfcExtrudedAreaSolid/IfcCircleProfileDef"
+
+        row = layout.row()
+        op = row.operator("bim.update_mesh_representation", text="Update Mesh As Arbitrary Extrusion")
+        op.ifc_representation_class = "IfcExtrudedAreaSolid/IfcArbitraryClosedProfileDef"
+
         row = layout.row()
         row.operator("bim.get_representation_ifc_parameters")
         for index, ifc_parameter in enumerate(props.ifc_parameters):
