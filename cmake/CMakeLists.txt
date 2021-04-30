@@ -413,7 +413,8 @@ IF(MSVC)
 		ENDIF()
 	ENDFOREACH()
 ElSE()
-    add_definitions(-Wall -Wextra)
+    #add_definitions(-Wall -Wextra)
+    add_definitions(-D_USE_MATH_DEFINES)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         add_definitions(-Wno-tautological-constant-out-of-range-compare)
     else()
@@ -582,6 +583,7 @@ set_target_properties(IfcParse PROPERTIES COMPILE_FLAGS -DIFC_PARSE_EXPORTS)
 IF(UNICODE_SUPPORT)
 	TARGET_LINK_LIBRARIES(IfcParse ${ICU_LIBRARIES} ${Boost_LIBRARIES})
 ENDIF()
+TARGET_LINK_LIBRARIES(IfcParse bcrypt)
 
 # IfcGeom
 file(GLOB IFCGEOM_H_FILES ../src/ifcgeom/*.h)
@@ -602,7 +604,7 @@ if (IFCCONVERT_DOUBLE_PRECISION)
     set_target_properties(IfcConvert PROPERTIES COMPILE_FLAGS -DIFCCONVERT_DOUBLE_PRECISION)
 endif()
 
-TARGET_LINK_LIBRARIES(IfcConvert ${IFCOPENSHELL_LIBRARIES} ${OPENCASCADE_LIBRARIES} ${Boost_LIBRARIES} ${OPENCOLLADA_LIBRARIES} ${ICU_LIBRARIES})
+TARGET_LINK_LIBRARIES(IfcConvert bcrypt ${IFCOPENSHELL_LIBRARIES} ${OPENCASCADE_LIBRARIES} ${Boost_LIBRARIES} ${OPENCOLLADA_LIBRARIES} ${ICU_LIBRARIES})
 if ((NOT WIN32) AND BUILD_SHARED_LIBS)
     # Only set RPATHs when building shared libraries (i.e. IfcParse and
     # IfcGeom are dynamically linked). Not necessarily a perfect solution

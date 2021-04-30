@@ -18,13 +18,13 @@
 ################################################################################
 
 ADD_EXECUTABLE(IfcParseExamples IfcParseExamples.cpp)
-TARGET_LINK_LIBRARIES(IfcParseExamples IfcParse)
+TARGET_LINK_LIBRARIES(IfcParseExamples bcrypt ${BCRYPT_LIBRARIES} IfcParse)
 set_target_properties(IfcParseExamples PROPERTIES FOLDER Examples)
 
 ADD_EXECUTABLE(IfcOpenHouse IfcOpenHouse.cpp)
-TARGET_LINK_LIBRARIES(IfcOpenHouse ${IFCOPENSHELL_LIBRARIES} ${OPENCASCADE_LIBRARIES})
+TARGET_LINK_LIBRARIES(IfcOpenHouse bcrypt ${BCRYPT_LIBRARIES} ${IFCOPENSHELL_LIBRARIES} ${OPENCASCADE_LIBRARIES})
 set_target_properties(IfcOpenHouse PROPERTIES FOLDER Examples)
 
 ADD_EXECUTABLE(IfcAdvancedHouse IfcAdvancedHouse.cpp)
-TARGET_LINK_LIBRARIES(IfcAdvancedHouse ${IFCOPENSHELL_LIBRARIES} ${OPENCASCADE_LIBRARIES})
+TARGET_LINK_LIBRARIES(IfcAdvancedHouse bcrypt ${BCRYPT_LIBRARIES} ${IFCOPENSHELL_LIBRARIES} ${OPENCASCADE_LIBRARIES})
 set_target_properties(IfcAdvancedHouse PROPERTIES FOLDER Examples)

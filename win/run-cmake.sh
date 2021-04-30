@@ -30,11 +30,7 @@ pushd $BUILD_DIR
 
 # PYTHON_INCLUDE_DIR=/mingw64/include/python2.7 \
 # PYTHON_LIBRARY=/mingw64/lib/python2.7/config/libpython2.7.a \
-OCC_INCLUDE_DIR=`pwd`/../deps-msys-installed/oce/include/oce/ \
-OCC_LIBRARY_DIR=`pwd`/../deps-msys-installed/oce/Win64/lib/ \
-OPENCOLLADA_INCLUDE_DIR=`pwd`/../deps-msys-installed/OpenCOLLADA/include/opencollada/ \
-OPENCOLLADA_LIBRARY_DIR=`pwd`/../deps-msys-installed/OpenCOLLADA/lib/opencollada/ \
-cmake -G "MSYS Makefiles" ../cmake -DSWIG_DIR=/usr/bin -DCMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX \
+cmake -D UNICODE_SUPPORT=0 -D BUILD_IFCPYTHON=0 -D OCC_LIBRARY_DIR=/mingw64/lib -DOCC_INCLUDE_DIR=/mingw64/include/opencascade -DCOLLADA_SUPPORT=0 -G "MSYS Makefiles" ../cmake -DCMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX \
     -DCMAKE_MAKE_PROGRAM=/mingw64/bin/mingw32-make.exe $@
 
 popd
